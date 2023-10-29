@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.sc.spaceCollection.review.model.ReviewDAO">
+	<sql id="searchWhere">
+		<if test="searchKeyword!=null and searchKeyword!=''">
+			and ${searchCondition} like '%' || #{searchKeyword} || '%'
+		</if>
+	</sql>
+	
+	<insert id="insertReview" parameterType="reviewVo">
+		<selectKey keyProperty="reviewNum" order="BEFORE" resultType="int">
+			select review_seq.nextval from dual
+		</selectKey>
+		insert into review(REVIEW_NUM,REVIEW_RATE,REVIEW_CONTENT,REVIEW_REG_DATE,USER_NUM,RESERVATION_NUM)
+		values(#{reviewNum},#{reviewRate},#{reviewContent},sysdate,#{userNum},#{reservationNum})
+	</insert>
+	
+	<select id="selectMyReview" resultType="map">
+	select * from
+		(
+			select rownum as RNUM, A.* from
+			(
+				select C.* from
+				(
+					select * from 
+					review r join RESERVATION_SPACE_SD_VIEW v
+					on r.RESERVATION_NUM=v.RESERVATION_NUM
+					where REVIEW_OUT_DATE IS NULL
+					and USER_ID=#{userId}
+					order by review_num desc
+				)C
+				<if test="searchKeyword!=null and searchKeyword!=''">
+					where REVIEW_CONTENT LIKE '%' || #{searchKeyword} || '%'
+					or SPACE_NAME LIKE '%' || #{searchKeyword} || '%'
+					or REVIEW_NUM LIKE '%' || #{searchKeyword} || '%'
+				</if>
+			)A
+		)
+		<![CDATA[
+		where RNUM>= #{startRow} 
+		and RNUM<=#{startRow} + #{endRow}]]>
+	</select>
+	
+	<select id="selectReviewEachUser">
+		select *from
+		(
+			select rownum as RNUM, A.* from
+			(
+				select * from review_userid 
+				where REVIEW_DEL_FLAG is null and USER_ID = #{userId}
+				<include refid="searchWhere"/>
+				order by REVIEW_NUM desc
+			)A
+		)
+		<![CDATA[
+		where RNUM>#{firstRecordIndex} 
+		and RNUM<=#{firstRecordIndex} + #{recordCountPerPage}]]>
+	</select>
+	
+	<select id="getTotalRecord" parameterType="searchVo" resultType="int">
+		select count(*) from review_userid
+		where REVIEW_DEL_FLAG is null and USER_ID = #{userId}
+		<include refid="searchWhere"/>
+	</select>
+	
+	<select id="getTotalRecordByUserId" parameterType="String" resultType="int">
+		select count(*) from review_userid
+		where REVIEW_DEL_FLAG is null and USER_ID = #{userId}
+	</select>
+	
+	<select id="selectNewReview"  resultType="map">
+		select * from main_review_view
+		WHERE REVIEW_DEL_FLAG IS NULL
+	</select>
+	
+	<select id="spaceDetailReview"  resultType="map">
+		select * 
+		from 
+		(
+			select ROWNUM as rn, A.* 
+			from 
+				(
+					select * from review_detail_view
+					where space_num = #{spaceNum} and review_del_flag is null
+					order by review_Num desc
+				)A
+		)
+		<![CDATA[where rn >= #{startRow} and rn <= #{endRow}]]>
+	</select>
+	
+	<update id="deleteReview" parameterType="int">
+		update review
+		set REVIEW_DEL_FLAG='Y' , REVIEW_OUT_DATE=sysdate
+		where review_num = #{reviewNum}
+	</update>
+	
+	<select id="getTotalRecordBySpaceNum" parameterType="int">
+		select count(*) as count,avg(REVIEW_RATE) as avg from review_detail_view
+		where space_num = #{spaceNum} and review_del_flag is null
+	</select>
+	
+</mapper>

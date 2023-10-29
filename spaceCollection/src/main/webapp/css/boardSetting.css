@@ -1,0 +1,17 @@
+@charset "UTF-8";
+
+#boardBt{
+	float: right;
+	margin-top: 16px;
+	margin-right: 5px;
+}
+
+
+h5{
+	float: left;
+}
+
+#pageDiv{
+	width: 100%;
+}
+

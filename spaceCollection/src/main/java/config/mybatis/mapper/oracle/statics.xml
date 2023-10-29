@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.sc.spaceCollection.statics.model.StaticsDAO">
+	<select id="lineStatic" resultType="staticsVo">
+		select
+		    regdate.day,
+		    nvl(sum(s.cnt), 0) as s_cnt,
+		    nvl(sum(u.cnt), 0) as u_cnt,
+		    nvl(sum(r.cnt), 0) as r_cnt
+		from
+		<![CDATA[
+		    (select trunc(space_request_date) regdate, count(*) cnt from space  where trunc(space_request_date)>= trunc(sysdate)-7  and trunc(sysdate)>trunc(space_request_date) group by trunc(space_request_date)) s,
+		    (select trunc(user_reg_date) regdate, count(*) cnt from user_info  where trunc(user_reg_date)>= trunc(sysdate)-7 and trunc(sysdate)>trunc(user_reg_date) group by trunc(user_reg_date)) u,
+		    (select trunc(reserver_pay_day) regdate, count(*) cnt from reservation  where trunc(reserver_pay_day)>= trunc(sysdate)-7  and trunc(sysdate)>trunc(reserver_pay_day) group by trunc(reserver_pay_day)) r,
+		    (select trunc(sysdate - level) day from dual connect by level <= 7) regdate
+		where regdate.day = s.regdate(+) and regdate.day = u.regdate(+) and regdate.day = r.regdate(+)
+		]]>
+		group by regdate.day
+		order by regdate.day
+	</select>
+</mapper>
+

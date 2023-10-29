@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.sc.spaceCollection.userInfo.model.UserInfoDAO">
+	<sql id="searchWhere">
+		<if test="searchKeyword!=null and searchKeyword!=''">
+			and ${searchCondition} like '%' || #{searchKeyword} || '%'
+		</if>
+	</sql>
+	
+	<select id="selectMember" parameterType="searchVo" resultType="userInfoVo">
+		select *from
+		(
+			select rownum as RNUM, A.* from
+			(
+				select * from user_info 
+				where USER_OUT_TYPE is null and <![CDATA[user_num<9999999]]>
+				<include refid="searchWhere"/>
+				order by user_num desc
+			)A
+		)
+		<![CDATA[
+		where RNUM>#{firstRecordIndex} 
+		and RNUM<=#{firstRecordIndex} + #{recordCountPerPage}]]>
+	</select>
+	
+	<select id="getTotalRecord" parameterType="searchVo" resultType="int">
+		select count(*) from user_info where USER_OUT_TYPE is null and <![CDATA[user_num<9999999]]>
+		<include refid="searchWhere"/>
+	</select>
+	
+	<select id="selectByUserId" parameterType="string" resultType="map">
+		select * from user_info where user_id = #{userId}
+	</select>
+	
+	<update id="memberWithdrawal" parameterType="string">
+		update user_info set USER_OUT_TYPE = 'Y', USER_OUT_DATE = sysdate where user_id = #{userId}
+	</update>
+	
+	<select id="selectWithdrawalMember" parameterType="searchVo" resultType="userInfoVo">
+		select *from
+		(
+			select rownum as RNUM, A.* from
+			(
+				select * from user_info 
+				where USER_OUT_TYPE ='Y' and <![CDATA[user_num<9999999]]>
+				<include refid="searchWhere"/>
+				order by user_num desc
+			)A
+		)
+		<![CDATA[
+		where RNUM>#{firstRecordIndex} 
+		and RNUM<=#{firstRecordIndex} + #{recordCountPerPage}]]>
+	</select>
+	
+	<select id="getWithdrawalTotalRecord" parameterType="searchVo" resultType="int">
+		select count(*) from user_info where USER_OUT_TYPE = 'Y' and <![CDATA[user_num<9999999]]>
+		<include refid="searchWhere"/>
+	</select>
+	
+	<update id="memberReturn" parameterType="string">
+		update user_info set user_out_date = '', user_out_type = '' where user_id = #{userId}
+	</update>
+	
+	<select id="selectUserInfoForExcel" resultType="userInfoVo">
+		select * from user_info <![CDATA[where user_num<9999999]]> order by user_num desc
+	</select>
+</mapper>
+

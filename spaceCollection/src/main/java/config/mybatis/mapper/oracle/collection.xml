@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.sc.spaceCollection.collection.model.CollectionDAO">
+	<select id="selectCollectionName" parameterType="int" resultType="map">
+		select distinct sc_type, sc_content from exhibition
+		where sc_code = #{scCode}
+	</select>
+	<select id="showCollectionList" resultType="map">
+		select s.*
+		from 
+		SPACE_SD_AVERAGEPRICE_FACILITY_VIEW s left outer join exhibition e
+		on s.space_num = e.space_Num
+		where sc_code = #{scCode}
+	</select>
+	
+</mapper>

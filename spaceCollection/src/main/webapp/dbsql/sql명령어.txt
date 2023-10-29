@@ -1,0 +1,206 @@
+create or replace view BOARD_BOARDTYPE_USER_VIEW
+as
+select bt."BOARD_TYPE_ID",bt."BOARD_TYPE_NAME",bt."BOARD_TYPE_COMMENT_OK",bt."BOARD_TYPE_FILE_OK",bt."BOARD_TYPE_FILE_NUM",bt."BOARD_TYPE_FILE_SIZE",bt."BOARD_TYPE_USE",bt."BOARD_TYPE_REGDATE", b.BOARD_NUM, b.BOARD_TITLE, b.BOARD_REG_DATE, b.BOARD_DEL_FLAG,
+u.USER_NUM, u.USER_ID, nvl(c.commentCount, 0) as commentCount, nvl(sf.fileCount, 0) as fileCount
+from board b join board_type bt 
+on b.board_type_id = bt.board_type_id 
+join user_info u 
+on b.user_num = u.user_num
+left outer join (select board_num, count(*) as commentCount from comments where COMMENT_DEL_FLAG is null group by board_num)c
+on b.board_num = c.board_num
+left outer join (select img_foreign_key, count(*) as fileCount from space_file group by img_foreign_key)sf
+on 'b'||b.board_num = sf.img_foreign_key
+order by board_reg_date desc;
+
+
+
+create or replace view board_view
+as
+select b.*, u.user_name, u.user_id, bt.board_type_name, bt.BOARD_TYPE_COMMENT_OK, bt.BOARD_TYPE_FILE_OK,
+bt.BOARD_TYPE_FILE_NUM, bt.BOARD_TYPE_FILE_SIZE from board b 
+join user_info u on b.user_num = u.user_num
+join board_type bt on b.board_type_id = bt.board_type_id;
+
+
+
+create or replace view comments_view
+as
+select c.*, u.user_id from comments c 
+join user_info u on c.user_num=u.user_num;
+
+
+
+create or replace view REVIEW_USERID
+as
+select r."REVIEW_NUM",r."REVIEW_RATE",r."REVIEW_CONTENT",r."REVIEW_DEL_FLAG",r."REVIEW_REG_DATE",r."REVIEW_OUT_DATE",r."USER_NUM",r."RESERVATION_NUM", u.user_id, s.space_name,
+re. RESERVER_PAY_DAY
+from review r 
+join user_info u on r.user_num = u.user_num
+join reservation re on r.reservation_num = re.reservation_num
+left join space_detail sd on re.sd_num = sd.sd_num
+left join space s on sd.space_num = s.space_num;
+
+
+
+create or replace view COMMENTS_BOARD_VIEW
+as
+select c."COMMENT_NUM",c."COMMENT_CONTENT",c."COMMENT_REG_DATE",c."COMMENT_DEL_FLAG",c."COMMENT_OUT_DATE",c."BOARD_NUM",c."USER_NUM", u.user_id , b.board_title
+from comments c 
+join user_info u on c.user_num=u.user_num
+join board b on c.board_num = b.board_num;
+
+
+create or replace view SPACE_LIST_VIEW
+as
+select s.*, st.space_type_name, u.user_id
+from space s join space_type st
+on s.space_type_no = st.space_type_no
+join user_info u
+on u.user_num = s.user_num;
+
+create table calendar_memo
+(
+    memo_num        number primary key,
+    memo_title      varchar2(50) not null,
+    memo_content    varchar2(200) not null,
+    memo_start_day  timestamp not null,
+    memo_end_day    timestamp,
+    user_num        number,
+    foreign key (user_num) references user_info(user_num)
+)
+create sequence calendar_memo_seq
+increment by 1
+start with 1
+nocache
+
+create or replace view SPACETYPE_CATEGORY_VIEW
+as
+select s.*, st.category_name
+from space_type s join space_type_category st
+on s.CATEGORY_NO = st.CATEGORY_NO;
+
+
+create or replace view admin_spaceconfirm_list_view
+as
+select s.*, st.space_type_name, u.user_id
+from space s 
+join space_type st on s.space_type_no = st.space_type_no
+join user_info u on s.user_num = u.user_num;
+;
+
+
+create or replace view admin_space_excel_view
+as
+select s."SPACE_NUM",s."SPACE_NAME",s."SPACE_BUSINESS_NUM",s."SPACE_ZIPCODE",s."SPACE_ADDRESS",s."SPACE_ADDRESS_DETAIL",s."SPACE_LOCATION",s."SPACE_INTRO",s."SPACE_INFO",s."SPACE_TAG",s."SPACE_FACILITY",s."SPACE_PHONE_NUM",s."SPACE_WARN",s."LATITUDE",s."LONGITUDE",s."DEL_FLAG",s."REFUND_NUM",s."USER_NUM",s."SPACE_TYPE_NO",s."SPACE_REQUEST_STATUS",s."SPACE_REQUEST_DATE",s."SPACE_REG_DATE",s."SPACE_OUT_DATE", st.space_type_name, u.user_id,
+u.user_email, sd.SD_TYPE, sd.SD_PRICE, sd.SD_MIN_PEOPLE, sd.SD_MAX_PEOPLE, sd.SD_AREA, sd.SD_MIN_TIME, sd.SD_CLOSE_TIME, sd.SD_OPEN_TIME,
+FAC_WIFI,FAC_PRINTER,FAC_CHAIR_TABLE,FAC_SMOKE,FAC_REST_ROOM,FAC_PC,FAC_TV,FAC_WHITE_BOARD,FAC_ELEVATOR,FAC_PARKING,FAC_FOOD,FAC_DRINK,FAC_COOK,FAC_PET,FAC_AUDIO
+from space s 
+join space_type st on s.space_type_no = st.space_type_no
+join user_info u on s.user_num = u.user_num
+join space_detail sd on s.space_num = sd.space_num
+join facility f on sd.FACILITY_NUM = f.FACILITY_NUM
+order by space_num;
+
+
+
+create or replace view spaceConfirmDetail_view
+as
+select 
+s.SPACE_NUM, s.SPACE_NAME, s.SPACE_BUSINESS_NUM, s.SPACE_ZIPCODE, s.SPACE_ADDRESS, s.SPACE_ADDRESS_DETAIL, s.SPACE_LOCATION, s.SPACE_INTRO, s.SPACE_INFO, s.SPACE_TAG, s.SPACE_PHONE_NUM, s.SPACE_WARN, s.SPACE_REQUEST_STATUS, s.SPACE_REQUEST_DATE, s.SPACE_REG_DATE, s.SPACE_OUT_DATE, 
+sd.SD_NUM, sd.SD_TYPE, sd.SD_PRICE, sd.SD_MIN_PEOPLE, sd.SD_MAX_PEOPLE, sd.SD_MIN_TIME, sd.SD_CLOSE_TIME, sd.SD_OPEN_TIME, sd.SD_AREA, 
+sc.category_name,
+st.space_type_name,
+f.FAC_WIFI, f.FAC_PRINTER, f.FAC_CHAIR_TABLE, f.FAC_SMOKE, f.FAC_REST_ROOM, f.FAC_PC, f.FAC_TV, f.FAC_WHITE_BOARD, f.FAC_ELEVATOR, f.FAC_PARKING, f.FAC_FOOD, f.FAC_DRINK, f.FAC_COOK, f.FAC_PET, f.FAC_AUDIO,
+r.REFUND_7_DAY, r.REFUND_6_DAY, r.REFUND_5_DAY, r.REFUND_4_DAY, r.REFUND_3_DAY, r.REFUND_2_DAY, r.REFUND_1_DAY, r.REFUND_DAY, 
+u.user_name, u.user_hp, u.user_id, u.user_email
+from space s left join space_detail sd
+on s.space_num = sd.space_num
+left join user_info u
+on s.user_num = u.user_num
+left join space_type st
+on s.space_type_no = st.space_type_no
+left join space_type_category sc
+on sc.category_no = st.category_no
+left join facility f
+on sd.facility_num = f.facility_num
+left join refund r
+on r.refund_num = s.refund_num;
+
+
+create or replace view spaceConfirmDetail_view
+as
+select 
+s.SPACE_NUM, s.SPACE_NAME, s.SPACE_BUSINESS_NUM, s.SPACE_ZIPCODE, s.SPACE_ADDRESS, s.SPACE_ADDRESS_DETAIL, s.SPACE_LOCATION, s.SPACE_INTRO, s.SPACE_INFO, s.SPACE_TAG, s.SPACE_PHONE_NUM, s.SPACE_WARN, s.SPACE_REQUEST_STATUS, s.SPACE_REQUEST_DATE, s.SPACE_REG_DATE, s.SPACE_OUT_DATE, 
+sc.category_name,
+st.space_type_name,
+r.REFUND_7_DAY, r.REFUND_6_DAY, r.REFUND_5_DAY, r.REFUND_4_DAY, r.REFUND_3_DAY, r.REFUND_2_DAY, r.REFUND_1_DAY, r.REFUND_DAY, 
+u.user_name, u.user_hp, u.user_id, u.user_email
+from space s 
+left join user_info u
+on s.user_num = u.user_num
+left join space_type st
+on s.space_type_no = st.space_type_no
+left join space_type_category sc
+on sc.category_no = st.category_no
+left join refund r
+on r.refund_num = s.refund_num;
+
+
+create or replace view spaceDetailView
+as
+select sd.*, f.FAC_WIFI, f.FAC_PRINTER,f.FAC_CHAIR_TABLE,f.FAC_SMOKE,f.FAC_REST_ROOM,f.FAC_PC,
+f.FAC_TV,f.FAC_WHITE_BOARD,f.FAC_ELEVATOR,f.FAC_PARKING,f.FAC_FOOD,f.FAC_DRINK,f.FAC_COOK,f.FAC_PET,f.FAC_AUDIO
+from space_detail sd
+left join facility f on sd.facility_num = f.facility_num;
+
+
+
+create or replace view adminStaticView
+as
+select r.*, sd.SD_PRICE, s.space_name, st.space_type_name 
+from reservation r
+left join space_detail sd on r.sd_num = sd.sd_num
+left join space s on sd.space_num = s.space_num
+left join user_info u on u.user_id = r.user_id
+left join space_type st on st.space_type_no = s.space_type_no; 
+
+
+create or replace view admin_board_view
+as
+select bt."BOARD_TYPE_ID",bt."BOARD_TYPE_NAME",bt."BOARD_TYPE_COMMENT_OK",bt."BOARD_TYPE_FILE_OK",bt."BOARD_TYPE_FILE_NUM",bt."BOARD_TYPE_FILE_SIZE",bt."BOARD_TYPE_USE",bt."BOARD_TYPE_REGDATE", b.BOARD_NUM, b.BOARD_TITLE, b.BOARD_REG_DATE, b.BOARD_DEL_FLAG,
+u.USER_NUM, u.USER_ID, nvl(commentCount, 0) as commentCount
+from board b join board_type bt 
+on b.board_type_id = bt.board_type_id 
+join user_info u 
+on b.user_num = u.user_num
+left join (select board_num, count(*) as commentCount from comments where COMMENT_DEL_FLAG is null group by board_num)c
+on b.board_num = c.board_num
+order by board_reg_date desc;  
+
+
+ccreate or replace view ADMIN_RECENT_RESERVATION_LIST_VIEW
+as
+select r.RESERVATION_NUM, r.RESERVE_PEOPLE, r.RESERVE_PRICE, r.RESERVATION_DEL_FLAG, RESERVER_PAY_DAY, u.USER_ID, sd.SD_TYPE, sd.SD_PRICE, s.SPACE_NAME
+from reservation r
+left join user_info u on u.user_id = r.user_id
+left join space_detail sd on sd.sd_num = r.sd_num
+left join space s on s.space_num = sd.space_num
+where RESERVER_PAY_DAY>=trunc(sysdate) and RESERVER_PAY_DAY<=sysdate
+and rownum <=10
+order by RESERVATION_NUM desc;
+
+
+create or replace view admin_reservation_List_View
+as
+select r.RESERVATION_NUM, r.RESERVE_PEOPLE, r.RESERVE_PRICE, RESERVER_PAY_DAY, u.USER_ID, sd.SD_TYPE, sd.SD_PRICE, s.SPACE_NAME
+from reservation r
+left join user_info u on u.user_id = r.user_id
+left join space_detail sd on sd.sd_num = r.sd_num
+left join space s on s.space_num = sd.space_num;
+
+
+create or replace view admin_reservation_top10_view
+as
+select s.space_name, total_cnt, total_people, total_price
+from reservation_rank r
+join space s on r.space_num = s.space_num;

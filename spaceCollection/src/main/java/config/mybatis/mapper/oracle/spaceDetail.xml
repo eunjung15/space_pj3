@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- namespace 부분은 말그대로 별칭을 정하는 부분이라 아무렇게나 지정해도 된다  -->
+<mapper namespace="com.sc.spaceCollection.spaceDetail.model.SpaceDetailDAO">
+
+	<select id="selectByNo" resultType="spaceVo" parameterType="int">
+		select * from space
+		where space_num = #{spaceNum}
+	</select>
+	
+	<select id="selectDetailByNo" resultType="map" parameterType = "int">
+		select * from spaceDetail_facility_view
+		where space_num = #{spaceNum}		
+	</select>
+	<select id="selectJustDetailByNo" resultType="spaceDetailVo" 
+		parameterType = "int">
+		select * from space_Detail
+		where sd_num = #{sdNum}		
+	</select>
+	<select id="selectBySpaceNo" resultType="spaceDetailVo" 
+		parameterType = "int">
+		select * from space_Detail
+		where space_num = #{spaceNum}		
+	</select>
+	
+	<select id="selectRefund" resultType="refundVo" parameterType="int">
+		select * from refund
+		where refund_num = #{refundNum}
+	</select>
+	
+	<select id="countReservationBySdNum" parameterType="int" resultType="int">
+		select sd_num, count(*) as reservationCount from reservation where sd_num = #{sdNum} group by sd_num
+	</select>
+	<select id="selectSpaceImg">
+		select IMG_TEMP_NAME from space_file
+		where IMG_TEMP_NAME like '%' || #{imgName} || '%'
+	</select>
+	<select id="selectSpaceMainImg">
+		select IMG_TEMP_NAME from space_file
+		where IMG_TEMP_NAME like '%' || #{imgName} || '%'
+	</select>
+</mapper>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.sc.spaceCollection.zzim.model.ZzimDAO">
+	<select id="selectZzimBySpaceNum" parameterType="zzimVo" resultType="zzimVo">
+		select * from zzim
+		where space_Num = #{spaceNum} and user_num = #{userNum}
+	</select>
+	<select id="selectZzim" parameterType="zzimVo" resultType="int">
+		select count(*) from zzim
+		where space_Num = #{spaceNum} and user_num = #{userNum}
+	</select>
+	
+	<insert id="insertZzim" parameterType="zzimVo">
+		<selectKey keyProperty="zzimNum" resultType="int" order="BEFORE">
+			select zzim_seq.nextval from dual
+		</selectKey>
+		insert into zzim(zzim_num, user_num, space_num)
+		values(#{zzimNum}, #{userNum}, #{spaceNum})
+	</insert>
+	
+	<delete id="deleteZzim" parameterType="zzimVo">
+		delete zzim
+		where ZZIM_NUM = #{zzimNum}
+	</delete>
+	<select id="showZzimList" resultType="map">
+		select * 
+		from(
+			select A.*, rownum as rn
+			from 
+			(
+				select * from zzim_space_view
+				where user_num = #{userNum} 
+			)A	
+		)
+		<![CDATA[
+		where rn >= #{startRow} and rn <= #{endRow} ]]>
+	</select>
+	
+</mapper>

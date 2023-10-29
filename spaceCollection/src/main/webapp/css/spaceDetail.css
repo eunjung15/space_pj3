@@ -1,0 +1,293 @@
+@charset "UTF-8";
+
+.section{
+	padding-top:8rem;
+}
+.tempP{
+	margin:4% 1% 5% 1%; 
+	text-align: center; 
+	color:#6d3afb;
+	font-size: 12px;
+	font-weight: 500;
+    line-height: 1.5;
+    word-break: keep-all
+	}
+	.custom-nav{
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+}
+	body{
+	overflow: visible;
+	}
+	.ol-list{
+		font-weight: bold;
+	}
+	.ol-span{
+		font-weight: normal;
+	}
+	
+	/*.detail-navTab h5:after{
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    content: "";
+    height: 4px;
+    width: 20px;
+    background-color: #ffd014;
+	}*/
+	.wrap {position: absolute;left: 0;bottom: 40px;width: 288px;height: 132px;margin-left: -144px;text-align: left;overflow: hidden;font-size: 12px;font-family: 'Malgun Gothic', dotum, '돋움', sans-serif;line-height: 1.5;}
+    .wrap * {padding: 0;margin: 0;}
+    .wrap .info {width: 286px;height: 120px;border-radius: 5px;border-bottom: 2px solid #ccc;border-right: 1px solid #ccc;overflow: hidden;background: #fff;}
+    .wrap .info:nth-child(1) {border: 0;box-shadow: 0px 1px 2px #888;}
+    .info .title {padding: 5px 0 0 10px;height: 30px;background: #eee;border-bottom: 1px solid #ddd;font-size: 14px;font-weight: bold;}
+    .info .close {position: absolute;top: 10px;right: 10px;color: #888;width: 17px;height: 17px;background: url('https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/overlay_close.png');}
+    .info .close:hover {cursor: pointer;}
+    .info .body {position: relative;overflow: hidden;}
+    .info .desc {position: relative;margin: 13px 0 0 90px;height: 75px;}
+    .desc .ellipsis {overflow: hidden;text-overflow: ellipsis;white-space: nowrap;}
+    .desc .jibun {font-size: 11px;color: #888;margin-top: -2px;}
+    .info .img {position: absolute;top: 6px;left: 5px;width: 73px;height: 71px;border: 1px solid #ddd;color: #888;overflow: hidden;}
+    .info:after {content: '';position: absolute;margin-left: -12px;left: 50%;bottom: 0;width: 22px;height: 12px;background: url('https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/vertex_white.png')}
+    .info .link {color: #5085BB;}
+    
+    
+    .question-box{
+    	text-align: center;
+    	padding : 3% 3% 3% 3%;   
+    }
+    
+    .review-box{
+    	text-align: center;
+    	padding : 3% 3% 3% 3%;   	
+    }
+    
+    .detail-navTab{
+		margin-top : 15px;
+		 
+    }
+    .nav-bar{
+    	width: 45px; height: 3px; background: #ffd014;
+    	margin-bottom : 10px;
+    }
+    .btn.btn-primary {
+    background: #193D76;
+    color: #fff;
+ 	}   
+    .nav-link {
+    display: block;
+    
+    padding: 0.5rem 1rem;
+    color: black;
+    text-decoration: none;
+    transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out;
+	}
+	.payment_type{
+		display: inline-block;
+	}
+	
+	
+	.accordionUl {
+	  display: flex;
+	  flex-direction: column;
+	  gap: 16px;
+	  margin: 0;
+	  padding: 0;
+	  max-width: 500px;
+	  width: 100%;
+	  list-style: none;
+	  
+	  .btn-outline-secondary{
+	  	width : 20%;
+	  	font-weight: bold;
+	  	border: 0.2rem #193D76 solid !important;
+	  	text-align: center;
+	  	font-size:30px;
+	  	padding:0% 0% 0% 0%;
+	  }
+	  .form-control{
+	  	border: 0.2rem #193D76 solid !important;
+	  	font-weight: bold;
+	  	font-size:22px;
+	  	padding : 0;
+	  	text-align: center;
+	  	
+	  	
+	  }
+	  .form-control:disabled{
+	  		background:white;
+	  	}
+	  
+	}
+	
+	.accordionLi {
+	  .button {
+	    display: block;
+	    padding: 20px;
+	    width: 100%;
+	    color: #000;
+	    text-align: left;
+	    font-size : 18px;
+	    font-weight : bold;
+	    background-color: white;
+	    border: 4px #193D76 solid;
+	    border: 0;
+	    cursor: pointer;
+	  }
+	  .content {
+	    display: none;
+	    margin: 0;
+	    background-color: #fff;
+	    border-top: 1px solid #ddd;
+	  }
+	  
+	  &.on {
+	    .button {
+			background-color: rgba(255, 208, 20, 0.9);
+			opacity : 0.8;
+		    border: 4px #193D76 solid;
+			border-radius : 1rem;
+			font-size : 18px;
+			font-weight : bold;	
+	    }
+	    .content {
+	      display: block;
+	    }
+	  }
+	}
+	
+	
+	.inAccordionUl {
+	  display: flex;
+	  flex-direction: column;
+	  gap: 16px;
+	  margin: 0;
+	  padding: 0;
+	  max-width: 500px;
+	  width: 100%;
+	  list-style: none;
+	}
+	
+	.inAccordionLi {
+	  .inButton {
+	    display: block;
+	    padding: 20px;
+	    width: 100%;
+	    color: #000;
+	    text-align: left;
+	    font-size : 16px;
+	    font-weight : bold;
+	    background-color: white;
+	    border: 4px #193D76 solid;
+	    border-radius : 1rem;
+	    cursor: pointer;
+	  }
+	  .inContent {
+	    display: none;
+	    margin: 0;
+	    padding: 20px;
+	    background-color: #fff;
+	    border-top: 1px solid #ddd;
+	  }
+	  
+	  &.on {
+	    .inButton {
+	      background-color: rgba(255, 208, 20, 0.9);
+	      opacity : 0.8;
+	      border: 4px #193D76 solid;
+	      border-radius : 1rem;
+	      font-size : 16px;
+    		font-weight : bold;
+	    }
+	    .inContent {
+	      display: block;
+	    }
+	  }
+	}
+	
+	
+	.swiper {
+      width: 100%;
+      height: 100%;
+    }
+
+    .swiper-slide {
+		text-align: center;
+		font-size: 18px;
+		/*display: flex;*/
+		justify-content: center;
+		align-items: center;
+		
+		.swiper-p{
+			margin-bottom : 0.3rem;
+			text-align: left;
+		}
+		.swiper-inBox{
+			
+	    	text-align: center;
+			font-size: 80%;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			border : grey 1px solid;
+			color: #cc8c28;
+			border: 2px solid #ffc000;
+			background-color: #ffd014;
+			padding: 17% 3% 19% 3%;
+			width: 100%;
+			
+	   		&.on{
+				color: white;
+				font-size: 80%;
+				border: 2px solid navy;
+				background-color: #193D76;
+			}
+			
+			&.reserved{
+				background:rgba(0, 0, 0, 0.2);
+				border:2px solid rgba(0, 0, 0, 0.69);
+				color : black;
+			}
+		}
+		
+    }
+    .payment_type{
+		border:none;	
+	 	borderRadius : 1rem;
+    }
+    .payment_type.on{
+		border:#193D76 5px solid;	
+	 	borderRadius : 1rem;
+    }
+    
+    
+    .swiper-slide img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+	
+	.facility-box{
+		padding : 0% 0% 6% 11%;
+	}
+	.facility-icon{
+		display: inline-block; 
+		margin: 2% 2% 2% 2%;
+	}
+	.p-3{
+		border-radius: 0.75rem;
+	}
+	.datepicker{
+		width : 100%;
+		
+		.datepicker--cell.-focus-{
+			border: 1px solid #193D76;
+		}
+		
+		.datepicker--cell.-disabled-{
+			cursor: default;
+    		color: #aeaeae;
+			background: lightgrey;    		
+			border-radius: 0;
+		}
+	}

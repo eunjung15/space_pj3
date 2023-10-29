@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.sc.spaceCollection.host.model.HostDAO">
+	<!-- 카테고리가 메인이고 resultmap에는 메인에 대한걸 작성 
+	컬렉션은 select category에서 가져온 categoryno로 type을 조회한다. -->
+	
+	<select id="selectSpaceType" resultType="SpaceTypeVO" parameterType="int">
+		select * from space_type
+		where category_no = #{categoryNo}
+		and SPACE_TYPE_DEL_FLAG is null
+	</select>
+	
+	<resultMap type="SpaceCategoryAllVO" id="spaceTypeResultMap">
+		<association property="spaceCategoryVo" column="categoryNo" javaType="SpaceCategoryVO" >
+			<id property="categoryNo" column="category_no" jdbcType="BIGINT" />
+			<result property="categoryName" column="category_name" jdbcType="VARCHAR" />
+		</association>
+		<collection property="spaceTypeList" javaType="ArrayList" ofType="map" 
+			column="category_no" select="selectSpaceType">
+		</collection>
+	</resultMap>
+
+	<select id="selectSpaceCategory" resultMap="spaceTypeResultMap">
+		select * from space_type_category
+		where CATEGORY_DEL_FLAG is null
+		order by category_no
+	</select>
+	
+	<select id="selectUserById" resultType="userInfoVo" parameterType="String">
+		select * from user_info
+		where user_id = #{userId}
+	</select>
+	
+	<insert id="insertSpace" parameterType="spaceVo">
+		<selectKey keyProperty="spaceNum" order="BEFORE" resultType="int">
+			select space_seq.nextval from dual
+		</selectKey>
+		insert into space(space_num, space_name, space_business_num, space_zipcode, space_address, 
+		    space_address_detail, space_location, space_intro, space_info, space_tag, space_facility, 
+		    space_phone_num, space_warn, latitude, longitude, refund_num, user_num, space_type_no,space_request_status)
+		values (#{spaceNum}, #{spaceName}, #{spaceBusinessNum}, #{spaceZipcode}, #{spaceAddress},
+				#{spaceAddressDetail}, #{spaceLocation}, #{spaceIntro}, #{spaceInfo}, #{spaceTag}, 
+				#{spaceFacility}, #{spacePhoneNum}, #{spaceWarn}, #{latitude}, #{longitude}, 
+				#{refundNum}, #{userNum}, #{spaceTypeNo}, 'R')
+	</insert>
+	
+	<select id="selectSpaceTypeBySpaceTypeName" resultType="spaceTypeVo" parameterType="String">
+		select * from space_type
+		where space_type_name = #{spaceTypeName}
+	</select>
+	
+	<insert id="insertRefund" parameterType="refundVo">
+		<selectKey keyProperty="refundNum" order="BEFORE" resultType="int">
+			select refund_seq.nextval from dual
+		</selectKey>
+		insert into refund
+		values (#{refundNum}, #{refund7Day}, #{refund6Day}, #{refund5Day}, #{refund4Day}, 
+				#{refund3Day}, #{refund2Day}, #{refund1Day}, #{refundDay})
+	</insert>
+	
+	<insert id="insertSpaceTotalFacility" parameterType="spaceTotalFacilityVo">
+		<selectKey keyProperty="spaceFacilityNum" order="BEFORE" resultType="int">
+			select space_total_facility_seq.nextval from dual
+		</selectKey>
+		insert into space_total_facility(SPACE_FACILITY_NUM, FAC_WIFI, FAC_PRINTER, FAC_CHAIR_TABLE,
+										FAC_SMOKE, FAC_REST_ROOM, FAC_PC, FAC_TV, FAC_WHITE_BOARD, FAC_ELEVATOR, 
+										FAC_PARKING, FAC_FOOD, FAC_DRINK, FAC_COOK, FAC_PET, FAC_AUDIO, SPACE_NUM)
+    
+		values (#{spaceFacilityNum}, #{facWifi}, #{facPrinter}, #{facChairTable}, #{facSmoke}, #{facRestRoom},
+				 #{facPC}, #{facTV}, #{facWhiteBoard}, #{facElevator}, #{facParking},
+				 #{facFood}, #{facDrink}, #{facCook}, #{facPet}, #{facAudio}, #{spaceNum})
+	</insert>
+	
+	<insert id="insertFacility" parameterType="facilityVo">
+		<selectKey keyProperty="facilityNum" order="BEFORE" resultType="int">
+			select facility_seq.nextval from dual
+		</selectKey>
+		insert into facility (FACILITY_NUM, FAC_WIFI, FAC_PRINTER, FAC_CHAIR_TABLE,
+								FAC_SMOKE, FAC_REST_ROOM, FAC_PC, FAC_TV, FAC_WHITE_BOARD, FAC_ELEVATOR, 
+								FAC_PARKING, FAC_FOOD, FAC_DRINK, FAC_COOK, FAC_PET, FAC_AUDIO)
+		
+		values (#{facilityNum}, #{facWifi}, #{facPrinter}, #{facChairTable}, #{facSmoke}, 
+				#{facRestRoom}, #{facPC}, #{facTV}, #{facWhiteBoard}, #{facElevator}, #{facParking}, 
+				#{facFood}, #{facDrink}, #{facCook}, #{facPet}, #{facAudio})
+	</insert>
+	
+	<insert id="insertSpaceDetail" parameterType="spaceDetailVo">
+		<selectKey keyProperty="sdNum" order="BEFORE" resultType="int">
+			select space_detail_seq.nextval from dual
+		</selectKey>
+		insert into space_detail(SD_NUM, SD_TYPE, SD_PRICE, SD_MIN_PEOPLE, SD_MAX_PEOPLE, SD_AREA,
+        						 SPACE_NUM, FACILITY_NUM, SD_MIN_TIME, SD_CLOSE_TIME, SD_OPEN_TIME)
+		values (#{sdNum}, #{sdType}, #{sdPrice}, #{sdMinPeople}, #{sdMaxPeople}, #{sdArea}, #{spaceNum},
+				#{facilityNum}, #{sdMinTime}, #{sdCloseTime}, #{sdOpenTime})
+	</insert>
+	
+	<select id="selectSpaceByUserNum" resultType="spaceVo" parameterType="int">
+		select * from space
+		where user_num = #{userNum} and del_flag is null
+		order by space_num desc
+	</select>
+	
+	<select id="selectSpaceFile" resultType="spaceFileVo" parameterType="int">
+		select * from space_file 
+		where img_temp_name like 'S' || #{spaceNum} ||'Main%'
+	</select>
+	
+	<select id="selectSpaceDetailBySpaceNum" resultType="spaceDetailVo" parameterType="int">
+		select * from space_detail
+		where space_num = #{spaceNum}
+		order by sd_num desc
+	</select>
+	
+	<select id="selectSpaceDetailBySdNum" resultType="spaceDetailVo" parameterType="int">
+		select * from space_detail
+		where sd_num = #{sdNum}
+	</select>
+	
+	<update id="deleteSpace" parameterType="int">
+		update space
+		set del_flag = 'Y', space_out_date = sysdate
+		where space_num = #{spaceNum}
+	</update>
+	
+	<update id="deleteSpaceDetail" parameterType="int">
+		delete space_detail
+		where sd_num = #{sdNum}
+	</update>
+	
+	<select id="selectSpaceByspaceNum" resultType="spaceVo" parameterType="int">
+		select * from space
+		where space_num = #{spaceNum}
+	</select>
+	
+	<select id="selectSpaceTypeBySpaceTypeNo" resultType="spaceTypeVo" parameterType="int">
+		select * from space_type
+		where space_type_no = #{spaceTypeNo}
+	</select>
+	
+	<select id="selectTotalFacilityBySpaceNum" resultType="spaceTotalFacilityVo" parameterType="int">
+		select * from space_total_facility
+		where space_num = #{spaceNum}
+	</select>
+	
+	<select id="selectRefundByRefundNum" resultType="refundVo" parameterType="int">
+		select * from refund
+		where refund_num = #{refundNum}
+	</select>
+	
+	<update id="updateSpace" parameterType="spaceVo">
+		update space 
+		set SPACE_NAME = #{spaceName}, SPACE_BUSINESS_NUM = #{spaceBusinessNum}, SPACE_ZIPCODE = #{spaceZipcode}, 
+			SPACE_ADDRESS = #{spaceAddress}, SPACE_ADDRESS_DETAIL = #{spaceAddressDetail}, 
+			SPACE_LOCATION = #{spaceLocation}, SPACE_INTRO = #{spaceIntro}, SPACE_INFO = #{spaceInfo}, 
+			SPACE_TAG = #{spaceTag}, SPACE_FACILITY = #{spaceFacility}, SPACE_PHONE_NUM = #{spacePhoneNum}, 
+			SPACE_WARN = #{spaceWarn}, LATITUDE = #{latitude}, LONGITUDE = #{longitude}, SPACE_TYPE_NO = #{spaceTypeNo}
+		where space_num = #{spaceNum}
+	</update>
+	
+	<update id="updateTotalFacility" parameterType="spaceTotalFacilityVo">
+		update space_total_facility
+		set FAC_WIFI = #{facWifi}, FAC_PRINTER = #{facPrinter}, FAC_CHAIR_TABLE = #{facChairTable},
+		FAC_SMOKE = #{facSmoke}, FAC_REST_ROOM = #{facRestRoom}, FAC_PC = #{facPC}, FAC_TV = #{facTV},
+		FAC_WHITE_BOARD = #{facWhiteBoard}, FAC_ELEVATOR = #{facElevator}, FAC_PARKING = #{facParking},
+		FAC_FOOD = #{facFood}, FAC_DRINK = #{facDrink}, FAC_COOK = #{facCook}, FAC_PET = #{facPet},
+		FAC_AUDIO = #{facAudio}
+		where space_num = #{spaceNum}
+	</update>
+	
+	<update id="updateRefund" parameterType="refundvo">
+		update refund
+		set REFUND_7_DAY = #{refund7Day}, REFUND_6_DAY = #{refund6Day}, REFUND_5_DAY = #{refund5Day},
+			REFUND_4_DAY = #{refund4Day}, REFUND_3_DAY = #{refund3Day}, REFUND_2_DAY = #{refund2Day},
+			REFUND_1_DAY = #{refund1Day}, REFUND_DAY = #{refundDay}
+		where refund_num = #{refundNum}
+	</update>
+	
+	<update id="updateSpaceDetail" parameterType="spaceDetailVo">
+		update space_detail
+		set SD_TYPE = #{sdType}, SD_PRICE = #{sdPrice}, SD_MIN_PEOPLE = #{sdMinPeople},
+		SD_MAX_PEOPLE = #{sdMaxPeople}, SD_AREA = #{sdArea}, SPACE_NUM = #{spaceNum},
+		FACILITY_NUM = #{facilityNum}, SD_MIN_TIME = #{sdMinTime}, SD_CLOSE_TIME = #{sdCloseTime},
+		SD_OPEN_TIME = #{sdOpenTime}
+		where sd_num = #{sdNum}
+	</update>
+	
+	<update id="updateFacility" parameterType="facilityVo">
+		update facility
+		set FAC_WIFI = #{facWifi}, FAC_PRINTER = #{facPrinter}, FAC_CHAIR_TABLE = #{facChairTable},
+		FAC_SMOKE = #{facSmoke}, FAC_REST_ROOM = #{facRestRoom}, FAC_PC = #{facPC}, FAC_TV = #{facTV},
+		FAC_WHITE_BOARD = #{facWhiteBoard}, FAC_ELEVATOR = #{facElevator}, FAC_PARKING = #{facParking},
+		FAC_FOOD = #{facFood}, FAC_DRINK = #{facDrink}, FAC_COOK = #{facCook}, FAC_PET = #{facPet},
+		FAC_AUDIO = #{facAudio}
+		where FACILITY_NUM = #{facilityNum}
+	</update>
+	
+	<select id="selectFacilityByFaNum" resultType="facilityVo" parameterType="int">
+		select * from facility
+		where facility_Num = #{facilityNum}
+	</select>
+	
+	<delete id="deleteMainImg" parameterType="int">
+		delete space_file
+		where img_temp_name like 'S' || #{spaceNum} || 'Main%'
+	</delete>
+	
+	<delete id="deleteSubImg" parameterType="int">
+		delete space_file
+		where img_temp_name like 'S' || #{spaceNum} || 'Sub%'
+	</delete>
+	
+	<delete id="deleteLicenseImg" parameterType="int">
+		delete space_file
+		where img_temp_name like 'S' || #{spaceNum} || 'license%'
+	</delete>
+	
+	<select id="selectNotice" resultType="boardVo" parameterType="String">
+		select rownum, a.* 
+		from 
+		(
+		    select * from board
+		    where board_type_id = 'b00012'
+		    order by board_num desc
+		) a
+		<![CDATA[where rownum <= 5]]>
+	</select>
+	
+	<select id="selectHostReservation" resultType="map">
+		select *
+		from
+		(
+		    select rownum as rn, f.* 
+		    from 
+		    (
+		        select * from host_reservation_view
+		        where user_num = #{userNum}
+		        <if test='status != null and status != ""'>
+		        		and
+		        	<if test="status == 'before'"><![CDATA[RESERVE_START_DAY >= sysdate ]]> and RESERVATION_DEL_FLAG = 'N'</if>
+		        	<if test="status == 'finished'"><![CDATA[RESERVE_START_DAY <= sysdate ]]> and RESERVATION_DEL_FLAG = 'N'</if>
+		        	<if test="status == 'canceled'">RESERVATION_DEL_FLAG = 'Y'</if>
+		        </if>
+		        <if test='keyword != "" and keyword != null'>
+					and USER_ID like '%' || #{keyword} || '%'
+		        </if>
+		        <if test='order != null and order != ""'>
+					order by ${order} asc       
+		        </if>
+		    )f
+		)A
+		<![CDATA[ 
+		where rn >= #{startRow} and rn <= #{endRow} ]]>
+	</select>
+	<select id="HostReservationCalendar" resultType="map">
+        select * from host_reservation_view
+        where user_num = #{userNum}
+	</select>
+	<select id="getDataByDate" resultType="int">
+		select RESERVE_PRICE from host_reservation_view
+		where user_num = #{userNum} and RESERVE_START_DAY = #{date}
+	</select>
+</mapper>

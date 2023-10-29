@@ -1,0 +1,675 @@
+@charset "utf-8";
+
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  /*color: white;*/
+}
+
+
+span.sTxt {
+    font-weight: bold;
+}
+/*p {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    color: black;
+    padding-right: 76px;
+}*/
+.rightdiv{
+    scale: 0.6;
+    float: right;
+}
+
+img {
+    width: 500px;
+}
+
+.appimg{
+	width:180px;
+}
+
+.appbox {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.google, .apple {
+  margin-right: 10px; 
+} 
+.reservation-text{
+	 font-size:15px
+	 }
+.reservation-text{
+	padding-top:14px;
+	font-weight:400;
+	font-size:18px;
+	line-height:26px;
+	color:#666;
+	text-align:unset
+	}
+.reservation-text{
+	padding-top:10px;
+	font-weight:400;
+	font-size:15px;
+	line-height:22px;
+	color:#666;
+	text-align:center
+	}
+.reservation-container {
+    height: 780px;
+    background-color: #fff;
+}
+
+.reservation-container .reservation-wrapper {
+    display: flex;
+    padding-top: 150px;
+}
+.reservation-container .reservation-wrapper .title-wrapper {
+    padding-top: unset;
+    display: flex;
+    justify-content: unset;
+    align-items: center;
+    padding-left: 120px;
+    padding-right: 216px;
+}
+.reservation-title {
+    font-weight: bold;
+    font-size: 40px;
+}
+
+:root {
+  --smooth: cubic-bezier(0.49, 0.06, 0.1, 0.99);
+}
+/* introLogo */
+.introLogo {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  z-index: 9999;
+}
+.introLogo p {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #fff;
+  font-size: 8em;
+  color: #193D76;
+  user-select: none;
+  letter-spacing: 50px;
+  transition: 1s var(--smooth);
+}
+.introLogo.play p {
+  letter-spacing: 1px;
+  opacity: 1;
+}
+
+/* header */
+body {
+  overflow-x: hidden;
+}
+header .container {
+  width: 100%;
+  height: 92px;
+  padding: 0 100px;
+  position: fixed;
+  transition: 0.25s;
+  z-index: 9999;
+}
+
+/* index common */
+section {
+  font-family: "Yanolja", "Noto Sans KR", sans-serif;
+  height: 80vh;
+  justify-content: center;
+  align-items: center;
+}
+.se1span {
+  display: block;
+    font-size: 40px;
+    font-weight: bold;
+    float: left;
+    margin: 230px 0px 0px 330px;
+  background: url(../images/bagr.png) top right / contain no-repeat; 
+    color: #2a2828;
+}
+
+.carousel-item.active {
+    padding-right: 100px;
+}
+em {
+  font-style: normal;
+}
+a {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+/* ----- top 버튼 ----- */
+.topBtn {
+  width: 48px;
+  height: 100px;
+  border: 2px solid #fff;
+  border-radius: 100px;
+  position: fixed;
+  right: 6%;
+  bottom: 10%;
+  z-index: 9999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: 0.5s var(--smooth);
+}
+.topBtn span {
+  width: 48px;
+  height: 48px;
+  overflow: hidden;
+  position: relative;
+}
+.topBtn span a {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.topBtn span #downArrow {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  animation: arrowFall 2s infinite ease-in-out;
+}
+.topBtn span #downArrow {
+  display: block;
+}
+.topBtn span #upArrow {
+  cursor: auto;
+  opacity: 0;
+}
+.topBtn span #upArrow img {
+  width: 14px;
+}
+/* top버튼 classList */
+.topBtn.scrolled {
+  border: 2px solid #000;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  overflow: hidden;
+}
+.topBtn.scrolled span #upArrow {
+  width: 100%;
+  cursor: pointer;
+  animation: arrowUp 0.7s 0.3s forwards;
+  animation-play-state: running;
+}
+.topBtn.scrolled span #downArrow {
+  display: none;
+}
+/* top 버튼 애니메이션 */
+@keyframes arrowFall {
+  0% {
+    top: -70px;
+  }
+  100% {
+    top: 80px;
+  }
+}
+/* top 버튼 나타나는 이벤트 */
+@keyframes arrowUp {
+  0% {
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 시작 애니메이션효과 */
+/* bgMask >
+  원에서 커지는 효과가 적용되는 마스크.
+  원이 브라우저 사이즈에 맞춰서 커져야되기 때문에
+  높이 값 100vh.
+*/
+.bgMask {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  clip-path: inset(50% 50% 50% 50% round 300px);
+  transition: 1.5s;
+}
+
+/* clipImg >
+  마스크 내부에 보여야되는 이미지
+  실제 이미지랑 비율이 맞아야 되기 때문에 높이는 실제 페이지 bg 높이.
+  원이 커지면서 살짝 커지므로 scale값.
+*/
+.bgMask .clipImg {
+  position: absolute;
+  width: 100%;
+  height: 115vh;
+  background: url(../images/ESG_bg.jpg) no-repeat 50% / cover;
+  transform: scale(0.7);
+  transition: 1s;
+}
+/* bgContainer >
+  페이지 실제 bg 컨테이너.
+  참고로 위에 마스크는 로딩 애니메이션 후 사라짐.
+*/
+#bgContainer {
+  position: relative;
+  width: 100%;
+  height: 115vh;
+}
+/* bgBox >
+  페이지 실제 bg.
+  마스크 높이가 브라우저 높이라서 밑에 남는 bg가
+  원본 페이지는 애니메이션 후에 깜빡하고 나타나는데 별로여서 아래로 커지는 효과 적용.
+  취향이기 때문에 생략해도 됨.
+  생략하려면 clip-path 값 삭제하고 스크립트에 bgLoad 함수도 삭제.
+*/
+#bgBox {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: url(../images/ESG_bg.jpg) no-repeat 50% / cover;
+  clip-path: inset(86% 0% 14% 0%);
+  transition: 1s;
+}
+
+/* fullScreen */
+.fullScreen {
+  position: relative;
+}
+.fullScreen video {
+  height: 100vh;
+  width: 100vw;
+  object-fit: cover;
+}
+.fullScreen .fullScreenText {
+  display: flex;
+  position: absolute;
+  width: 90%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-weight: 700;
+  font-size: 3.5vw;
+  line-height: 1.2;
+  color: #ffffff;
+}
+.fullScreen .fullScreenText .emtpy {
+  width: 70%;
+  height: 100%;
+}
+.fullScreen .fullScreenText .txt p {
+  overflow: hidden;
+}
+.fullScreen .fullScreenText .txt p span {
+  animation: up 0.5s forwards ease;
+  transform: translateY(2em);
+}
+@keyframes up {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.fullScreen .fullScreenText .txt p .del {
+  animation-delay: 3s;
+}
+.fullScreen .fullScreenText .txt p .del1 {
+  animation-delay: 3.5s;
+}
+.fullScreen .fullScreenText .txt p .del2 {
+  animation-delay: 4s;
+}
+
+/* container section1,2 안 txtBox */
+.container .txtBox em {
+  font-size: 25px;
+}
+.container .txtBox h1 p {
+  font-size: 3.646vw;
+  font-weight: 700;
+  overflow: hidden;
+}
+.container .txtBox p {
+  font-size: 1.354vw;
+}
+.container .txtBox p em {
+  font-weight: 700;
+  font-size: 1.354vw;
+}
+:is(.sec1, .sec2, .sec3):hover .container .txtBox p span {
+  animation: up1and2 0.5s forwards ease;
+  transform: translateY(2em);
+  opacity: 0;
+}
+@keyframes up1and2 {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+:is(.sec1, .sec2, .sec3):hover .container .txtBox p .del {
+  animation-delay: 0.5s;
+}
+:is(.sec1, .sec2, .sec3):hover .container .txtBox p .del1 {
+  animation-delay: 1s;
+}
+.sec3:hover .container .txtBox p .del2 {
+  animation-delay: 1.5s;
+}
+
+:is(.sec1, .sec2, .sec3):hover .container .txtBox {
+  overflow: hidden;
+}
+:is(.sec1, .sec2, .sec3):hover .container .txtBox .sTxt {
+  animation: sTxt 0.5s forwards ease;
+  transform: translateY(4em);
+  opacity: 0;
+}
+@keyframes sTxt {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.sTxtWrapper {
+  overflow: hidden;
+}
+:is(.sec1, .sec2):hover .container .txtBox .sTxt {
+  animation-delay: 1s;
+}
+.sec3:hover .container .txtBox .sTxt {
+  animation-delay: 1.5s;
+}
+
+/* **** container sec1,2 hovBox **** */
+.container .txtBox .hovBox {
+  margin-top: 2.5vw;
+  border: 1px solid #000;
+  box-sizing: border-box;
+  position: relative;
+  width: 21vw;
+  height: 4.1vw;
+  overflow: hidden;
+}
+.container .txtBox .hovBox img {
+  align-items: center;
+  height: 4.1vw;
+  width: 3vw;
+  margin-left: 16vw;
+  transition-duration: 0.3s;
+}
+.container .txtBox .hovBox a {
+  position: absolute;
+  z-index: 999;
+  line-height: 4.1vw;
+  font-size: 1vw;
+  text-indent: 1vw;
+  transition-duration: 0.3s;
+}
+.container .txtBox .hovBox span {
+  position: absolute;
+  width: 1%;
+  height: 100%;
+  transition-property: all;
+  transition-duration: 0.3s;
+}
+.container .txtBox .hovBox span img {
+  align-items: center;
+  height: 4.1vw;
+  width: 0;
+  margin-left: 16vw;
+}
+.container .txtBox .hovBox:hover a {
+  color: #ffffff;
+  transform: translateX(0.6vw);
+}
+.container .txtBox .hovBox:hover span {
+  background-color: #193D76;
+  width: 100%;
+}
+.container .txtBox .hovBox:hover span img {
+  width: 3vw;
+}
+.container .txtBox .hovBox:hover .gone {
+  transform: translateX(10vw);
+}
+/* **** sec1 **** */
+.sec1 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  
+}
+.sec1 .container {
+  display: flex;
+  justify-content: space-between;
+  width: 89%;
+}
+.sec1 .container .sec1Txt {
+  width: 30vw;
+}
+/* logoVidoeWrapper */
+.sec1 .container .logoVidoeWrapper {
+  width: 30vw;
+  position: relative;
+  margin-right: 5vw;
+}
+.sec1 .container .logoVidoeWrapper video {
+  border-radius: 50px; /* 임시 */
+}
+.sec1 .container .logoVidoeWrapper .whLogo {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+}
+/* **** sec2 **** */
+.sec2 {
+  color: black;
+  background: url(https://www.spacecloud.kr/_nuxt/img/app_start_pc.1658f3c.png) no-repeat 50% / cover;
+  height: 100vh;
+}
+.container .sec2Txt.txtBox .hovBox {
+  border: 1px solid black;
+}
+.sec2 .container {
+  display: flex;
+  align-items: center;
+  width: 89%;
+  height: 100%;
+  margin: 0 auto;
+}
+.sec2 .container .sec2Txt {
+  width: 35vw;
+}
+/* **** sec3 **** */
+/* ----- txt ----- */
+.sec3 .abs {
+  position: sticky;
+  top: 0;
+  z-index: 99999;
+  /* height: 100vh; */
+}
+.sec3 .container {
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  height: 100vh;
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 99999;
+}
+/* -----js----- */
+.sec3 {
+  transform: translate(5.5%);
+  position: relative;
+}
+.sticky {
+  position: sticky;
+  top: 0;
+  /* width: 50vw; */
+  /* height: 100vh; */
+}
+.ulHo {
+  margin-top: 20vh;
+  height: 50vh;
+  position: absolute;
+  top: 0;
+  display: flex;
+  flex-flow: nowrap;
+  align-items: center;
+  justify-content: space-around;
+  width: 300vw;
+  /* background-color: #ddd; */
+}
+.sec3 img {
+  display: flex;
+  transition: 0.7s;
+  /* align-self: center; */
+}
+.ulHo img:nth-of-type(1) {
+  width: 50vw;
+  margin: 0 5vw 0 20vw;
+}
+.sec3 img:nth-of-type(2) {
+  border-radius: 50%;
+  width: 20vw;
+  margin-top: 25vw;
+}
+.sec3 img:nth-of-type(3) {
+  width: 30vw;
+  height: 40vw;
+}
+.sec3 img:nth-of-type(4) {
+  width: 50vw;
+  margin-top: 25vw;
+}
+.sec3 img:nth-of-type(5) {
+  border-radius: 50%;
+  width: 20vw;
+}
+/* **** sec4 **** */
+.sec4 {
+  display: flex;
+  justify-content: center;
+}
+.sec4 {
+  position: relative;
+  height: 100vh;
+}
+.sec4 .container {
+  position: absolute;
+  top: 110vh;
+  width: 89%;
+  display: flex;
+  justify-content: space-between;
+}
+.sec4 .container .sec4Txt h1 {
+  font-size: 2.81vw;
+}
+.sec4 .container .sec4Txt p {
+  font-size: 1.35vw;
+  font-weight: 700;
+  margin: 0.1vw 0 2.5vw 0;
+}
+.sec4 .container .hovBox {
+  margin-top: 2.5vw;
+  border: 1px solid #000;
+  box-sizing: border-box;
+  position: relative;
+  width: 55%;
+  height: 4.1vw;
+  overflow: hidden;
+}
+.sec4 .container .hovBox a {
+  position: absolute;
+  z-index: 999;
+  line-height: 4.1vw;
+  font-size: 1vw;
+  text-indent: 1vw;
+  transition-duration: 0.3s;
+}
+.sec4 .container .hovBox span {
+  position: absolute;
+  width: 1%;
+  height: 100%;
+  transition-property: all;
+  transition-duration: 0.3s;
+}
+.sec4 .container .hovBox img {
+  align-items: center;
+  height: 4.1vw;
+  width: 3vw;
+  margin-left: 15vw;
+  transition-duration: 0.4s;
+}
+.sec4 .container .hovBox:hover .aWhite {
+  width: 3vw;
+}
+.sec4 .container .hovBox:hover .bOut {
+  transform: translateX(10vw);
+}
+.sec4 .container .hovBox .diagonal {
+  width: 0.6vw;
+  margin-left: 18vw;
+}
+.sec4 .container .hovBox .aWhite {
+  width: 0%;
+}
+.sec4 .container .hovBox:hover a {
+  color: #ffffff;
+  transform: translateX(0.6vw);
+}
+.sec4 .container .hovBox:hover span {
+  background-color: #193D76;
+  width: 100%;
+}
+.sec4 .container .hovBox:hover .diagonal {
+  width: 0.6vw;
+}
+.sec4 .container .imgBox {
+  margin-top: 2vw;
+  width: 38vw;
+  height: 38vw;
+  border-radius: 50%;
+  margin-bottom: 40vh;
+  overflow: hidden;
+}
+.sec4 .container img {
+  width: 100%;
+  transition: 0.8s;
+  cursor: pointer;
+}
+.sec4 .container img:hover {
+  transform: scale(1.1);
+}
+/* ----- footer ----- */
+
+img {
+  vertical-align: top;
+}
+

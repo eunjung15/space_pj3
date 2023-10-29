@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- namespace 부분은 말그대로 별칭을 정하는 부분이라 아무렇게나 지정해도 된다  -->
+<mapper namespace="com.sc.spaceCollection.space.model.SpaceDAO">
+	<sql id="searchWhere">
+		<if test="searchKeyword!=null and searchKeyword!=''">
+			and ${searchCondition} like '%' || #{searchKeyword} || '%'
+		</if>
+	</sql>
+	
+	<select id="selectAll">
+		select * 
+		from(
+			select A.*, rownum as rn
+			from 
+			(
+				select * from SPACE_SD_AVERAGEPRICE_FACILITY_VIEW
+				where 1 = 1
+				and SPACE_REQUEST_STATUS = 'Y'
+				<if test="region!=null and region!=''">
+					and space_address like '%' || #{region} || '%'
+				</if>
+				<if test="maxPeople!=null and maxPeople!=''">
+					<![CDATA[ and MAXPEOPLE >=  #{maxPeople} ]]>
+				</if>
+				<if test="minPrice!=null and minPrice!=''">
+					<![CDATA[ and AVGPRICE >  #{minPrice} ]]> 
+				</if>
+				<if test="maxPrice!=null and maxPrice!=''">
+					<![CDATA[ and AVGPRICE <  #{maxPrice} ]]> 
+				</if>
+				<if test="filterList!=null and filterList!=''">
+				and
+					<foreach item="item" collection="filterList" separator="and">
+					   FAC_${item} = 'Y'
+				    </foreach>
+				</if>
+				<if test="order!=null and order!=''">
+					  <![CDATA[ ORDER BY ${order} ]]>
+				</if>
+			)A	
+		)
+		<![CDATA[
+		where rn >= #{startRow} and rn <= #{endRow} ]]>
+	</select>
+	
+	
+	<select id="selectBySpaceType" resultType="map">
+		select * 
+		from(
+			select A.*, rownum as rn
+			from 
+			(
+				select * from SPACE_SD_AVERAGEPRICE_FACILITY_VIEW
+				where space_Type_no = #{spaceTypeNo}
+				and SPACE_REQUEST_STATUS = 'Y'
+				<if test="region!=null and region!=''">
+					and space_address like '%' || #{region} || '%'
+				</if>
+				<if test="maxPeople!=null and maxPeople!=''">
+					<![CDATA[ and MAXPEOPLE >=  #{maxPeople} ]]>
+				</if>
+				<if test="minPrice!=null and minPrice!=''">
+					<![CDATA[ and AVGPRICE >=  #{minPrice} ]]> 
+				</if>
+				<if test="maxPrice!=null and maxPrice!=''">
+					<![CDATA[ and AVGPRICE <  #{maxPrice} ]]> 
+				</if>
+				<if test="filterList!=null and filterList!=''">
+				and
+					<foreach item="item" collection="filterList" separator="and">
+					   FAC_${item} = 'Y'
+				    </foreach>
+				</if>
+				<if test="order!=null and order!=''">
+					  <![CDATA[ ORDER BY ${order} ]]>
+				</if>
+			)A	
+		)
+		<![CDATA[
+		where rn >= #{startRow} and rn <= #{endRow} ]]>
+	</select>
+	
+	<select id="selectBySpaceName" resultType="map">
+		select * 
+		from(
+			select A.*, rownum as rn
+			from 
+			(
+				select * from SPACE_SD_AVERAGEPRICE_FACILITY_VIEW
+				where space_Name like '%' || #{spaceName} || '%'
+				and SPACE_REQUEST_STATUS = 'Y'
+				<if test="region!=null and region!=''">
+					and space_address like '%' || #{region} || '%'
+				</if>
+				<if test="maxPeople!=null and maxPeople!=''">
+					<![CDATA[ and MAXPEOPLE >=  #{maxPeople} ]]>
+				</if>
+				<if test="minPrice!=null and minPrice!=''">
+					<![CDATA[ and AVGPRICE >  #{minPrice} ]]> 
+				</if>
+				<if test="maxPrice!=null and maxPrice!=''">
+					<![CDATA[ and AVGPRICE <  #{maxPrice} ]]> 
+				</if>
+				<if test="filterList!=null and filterList!=''">
+				and
+					<foreach item="item" collection="filterList" separator="and">
+					   FAC_${item} = 'Y'
+				    </foreach>
+				</if>
+				<if test="order!=null and order!=''">
+					  <![CDATA[ ORDER BY ${order} ]]>
+				</if>
+			)A	
+		)
+		<![CDATA[
+		where rn >= #{startRow} and rn <= #{endRow} ]]>
+	</select>
+	<select id="selectBySpaceTypeMap" resultType="spaceVo">
+		select * from space
+		where space_Type_no = #{spaceTypeNo}	
+		and SPACE_REQUEST_STATUS = 'Y'
+	</select>
+	<select id="selectBySpaceNameMap" resultType="spaceVo">
+		select * from space
+		where space_Name like '%' || #{spaceName} || '%'
+		and SPACE_REQUEST_STATUS = 'Y'	
+	</select>
+	
+	<select id="selectAllMap" resultType="spaceVo">
+		select * from SPACE_SD_AVERAGEPRICE_FACILITY_VIEW
+		where SPACE_REQUEST_STATUS = 'Y'
+	</select>
+	
+	<select id="selectBySpaceNum"  resultType="spaceVo">
+		select * from space
+		where SPACE_REQUEST_STATUS = 'Y'
+		order by SPACE_REG_DATE desc 
+		FETCH FIRST 9 row only
+	</select>
+	<select id="usercount" resultType="map">
+		SELECT * FROM user_counts_view
+	</select>
+	<select id="selectSpaceListViewByUserId" resultType="map">
+		select * from
+		(
+			select rownum as RNUM, A.* from
+			(
+				select * from SPACE_LIST_VIEW where user_id = #{userId}
+				<include refid="searchWhere"/>
+				order by space_reg_date desc
+			)A
+		)
+		<![CDATA[
+		where RNUM>#{firstRecordIndex} 
+		and RNUM<=#{firstRecordIndex} + #{recordCountPerPage}]]>
+	</select>
+	
+	<select id="getTotalRecordSpaceListViewByUserId" parameterType="searchVo" resultType="int">
+		select count(*) from SPACE_LIST_VIEW where user_id = #{userId}
+		<include refid="searchWhere"/>
+	</select>
+	
+	<update id="spaceConfirm" parameterType="spaceVo">
+		update space set space_reg_date = sysdate, space_request_status = 'Y' 
+		where space_num = #{spaceNum}
+	</update>
+	
+	<update id="spaceDenine" parameterType="spaceVo">
+		update space set space_reg_date = sysdate, space_request_status = 'N' 
+		where space_num = #{spaceNum}
+	</update>
+	
+	<update id="spaceConfirmOne" parameterType="int">
+		update space set space_reg_date = sysdate, space_request_status = 'Y' 
+		where space_num = #{spaceNum}
+	</update>
+	
+	<update id="spaceDenineOne" parameterType="int">
+		update space set space_reg_date = sysdate, space_request_status = 'N' 
+		where space_num = #{spaceNum}
+	</update>
+	
+	<select id="selectSpaceConfirmList" parameterType="searchVo" resultType="map">
+		select * from
+		(
+			select rownum as RNUM, A.* from
+			(
+				select * from ADMIN_SPACECONFIRM_LIST_VIEW where SPACE_REQUEST_STATUS = 'R'
+				<include refid="searchWhere"/>
+				order by space_request_date
+			)A
+		)
+		<![CDATA[
+		where RNUM>#{firstRecordIndex} 
+		and RNUM<=#{firstRecordIndex} + #{recordCountPerPage}]]>
+	</select>
+	
+	<select id="getTotalRecordSpaceConfrimList" parameterType="searchVo" resultType="int">
+		select count(*) from ADMIN_SPACECONFIRM_LIST_VIEW where SPACE_REQUEST_STATUS = 'R'
+		<include refid="searchWhere"/>
+	</select>
+	
+	<select id="selectSpaceConfirmHistoryList" resultType="map">
+		select * from
+		(
+			select rownum as RNUM, A.* from
+			(
+				select * from ADMIN_SPACECONFIRM_LIST_VIEW 
+				where SPACE_REQUEST_STATUS is not null
+				<if test="searchVo.searchKeyword!=null and searchVo.searchKeyword!=''">
+					and ${searchVo.searchCondition} like '%' || #{searchVo.searchKeyword} || '%'
+				</if>
+				<if test="status !=null and status !=''">
+					and SPACE_REQUEST_STATUS = #{status}
+				</if>
+				 <![CDATA[ ORDER BY ${order} ]]>
+			)A
+		)
+		<![CDATA[
+		where RNUM>#{searchVo.firstRecordIndex} 
+		and RNUM<=#{searchVo.firstRecordIndex} + #{searchVo.recordCountPerPage}]]>
+	</select>
+	
+	<select id="getTotalRecordSpaceConfirmHistoryList" resultType="int">
+		select count(*) from ADMIN_SPACECONFIRM_LIST_VIEW 
+			where SPACE_REQUEST_STATUS is not null
+			<if test="searchVo.searchKeyword!=null and searchVo.searchKeyword!=''">
+				and ${searchVo.searchCondition} like '%' || #{searchVo.searchKeyword} || '%'
+			</if>
+			<if test="status !=null and status !=''">
+				and SPACE_REQUEST_STATUS = #{status}
+			</if>
+			order by #{order}
+	</select>
+	
+	<select id="selectSpaceForExcel" resultType="map">
+		select * from ADMIN_SPACE_EXCEL_VIEW order by space_num
+	</select>
+	<select id="selectSpaceTypeName" parameterType="int" resultType="string">
+		select space_type_name from space_type where space_type_no = #{spaceTypeNo}
+	</select>
+	
+	<select id="selectSpaceConfirmDetailBySpaceNum" parameterType="int" resultType="map">
+		select * from spaceConfirmDetail_view where space_num = #{spaceNum}
+	</select>
+	
+	<select id="selectSpaceDtailViewBySpaceNum" parameterType="int" resultType="map">
+		select * from spaceDetailView where space_num = #{spaceNum}
+	</select>
+	
+	<select id="selectSpaceFileViewBySpaceNum" parameterType="String" resultType="map">
+		select s.space_num,s.space_name ,v.IMG_TEMP_NAME
+		from space s join SPACE_FILE_VIEW v
+		on s.space_num=v.space_num
+		where s.space_num=#{spaceNum}
+	</select>
+	
+	
+	
+</mapper>

@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.sc.spaceCollection.board.model.BoardDAO">
+	
+	
+	<sql id="searchWhere">
+		<if test="searchKeyword!=null and searchKeyword!=''">
+			and ${searchCondition} like '%' || #{searchKeyword} || '%'
+		</if>
+		<if test="boardTypeName!=null and boardTypeName!=''">
+			and board_type_name = #{boardTypeName}
+		</if>
+	</sql>
+	<sql id="searchWhere2">
+		<where>
+			<if test="searchKeyword!=null and searchKeyword!=''">
+				${searchCondition} like '%' || #{searchKeyword} || '%'			
+			</if>
+			<if test="searchKeyword==null or searchKeyword==''">
+				board_type_name = #{boardTypeName}
+			</if>
+		</where>
+	</sql>
+	
+	
+	<select id="selectNotice" resultType="map">
+		        select * from board
+				where BOARD_TYPE_ID like 'b00012'
+				and BOARD_DEL_FLAG is null
+		        <if test='searchKeyword != "" and searchKeyword != null'>
+					and BOARD_TITLE like '%' || #{searchKeyword} || '%'
+		        </if>
+					order by BOARD_REG_DATE desc       
+	</select>
+	
+	
+	<select id="selectBoardAll" parameterType="searchVo" resultType="map">
+		select * from
+		(
+			select rownum as RNUM, A.* from
+			(
+				select * from BOARD_BOARDTYPE_USER_VIEW 
+				where BOARD_DEL_FLAG is null and BOARD_TYPE_USE ='Y' 
+				<include refid="searchWhere"/>
+				order by board_reg_date desc
+			)A
+		)
+		<![CDATA[
+		where RNUM>#{firstRecordIndex} 
+		and RNUM<=#{firstRecordIndex} + #{recordCountPerPage}]]>
+	</select>
+	
+	
+
+	<select id="getTotalRecord" parameterType="searchVo" resultType="int">
+		select count(*) from BOARD_BOARDTYPE_USER_VIEW
+		where BOARD_DEL_FLAG is null
+		<include refid="searchWhere"/>
+	</select>
+	
+	<insert id="insertBoard" parameterType="boardVo">
+		<selectKey keyProperty="boardNum" order="BEFORE" resultType="int">
+			select board_seq.nextval from dual
+		</selectKey>
+		insert into board(BOARD_NUM, BOARD_TITLE, BOARD_CONTENT, BOARD_VIEWS, BOARD_GROUP_NO, BOARD_STEP, BOARD_SORT_NO, BOARD_TYPE_ID, USER_NUM)
+		values(#{boardNum}, #{boardTitle}, #{boardContent}, #{boardViews}, #{boardNum}, 0, 0, #{boardTypeId}, #{userNum})
+	</insert>
+	
+	<select id="selectByBoardNum" parameterType="int" resultType="map">
+		select * from board_view where board_num = #{boardNum}
+	</select>
+	
+	<update id="updateBoardDelFlag" parameterType="boardVo">
+		update board set board_del_flag = 'Y' where board_num = #{boardNum}
+	</update>
+	
+	<select id="selectByeventBoard" resultType="map" >
+		select *
+			from board 
+			where board_type_id = 'b00017' and
+			board_del_flag is null
+			ORDER BY BOARD_REG_DATE desc
+	</select>
+	
+	<select id="selectNoticeBoard"  resultType="boardVo">
+        SELECT *
+        FROM board
+        WHERE board_type_id = 'b00012' AND
+              board_del_flag IS NULL
+        ORDER BY BOARD_REG_DATE DESC
+    </select>
+	
+	<select id="selectByeventBoardNum" parameterType="int" resultType="map">
+		select *from board 
+			where board_type_id = 'b00017' 
+			and board_num = #{boardNum} 
+			and board_del_flag is null
+			ORDER BY BOARD_REG_DATE desc
+	</select>
+	
+	<update id="updateBoard" parameterType="boardVo">
+		update board set BOARD_TITLE = #{boardTitle}, BOARD_CONTENT = #{boardContent} where BOARD_NUM = #{boardNum}
+	</update>
+	
+	<select id="selectFocus" resultType="boardVo">
+		select * from board where BOARD_TYPE_ID like 'b00019'
+	</select>
+	
+</mapper>

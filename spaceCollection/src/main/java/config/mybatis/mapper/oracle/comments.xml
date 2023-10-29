@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.sc.spaceCollection.comments.model.CommentsDAO">
+	<sql id="searchWhere">
+		<if test="searchKeyword!=null and searchKeyword!=''">
+			and ${searchCondition} like '%' || #{searchKeyword} || '%'
+		</if>
+	</sql>
+	
+	
+	<select id="selectPaging" resultType ="commentsVo" >
+		select * 
+		   from(
+		      select A.*, rownum as rn
+		      from 
+		      (
+		         select * from COMMENTS
+		         where BOARD_NUM = #{boardNum}
+		         and COMMENT_DEL_FLAG is null 
+				order by COMMENT_REG_DATE desc
+		      )A   
+		   )
+			<![CDATA[
+			where rn >= #{startRow} and rn <= #{endRow} ]]>	
+	</select>
+	
+	<insert id="insertComments" parameterType="commentsVo">
+		<selectKey keyProperty="commentNum" order="BEFORE" resultType="int">
+			select comments_seq.nextval from dual
+		</selectKey>
+		insert into comments(COMMENT_NUM, COMMENT_CONTENT, BOARD_NUM, USER_NUM) 
+		values(#{commentNum}, #{commentContent}, #{boardNum}, #{userNum})
+	</insert>
+	
+	<select id="selectByBoardNum" parameterType="commentsVo" resultType="map">
+		select a.* from
+		(select * from comments_view where board_num = #{boardNum} and COMMENT_DEL_FLAG is null 
+		order by comment_num desc)a 
+		<![CDATA[
+		where rownum<=#{addNum}]]>
+		
+	</select>
+	
+	<select id="countComments" parameterType="int" resultType="int">
+		select count(*) from comments where board_num = #{boardNum} and COMMENT_DEL_FLAG is null
+	</select>
+	
+	<!--이벤트 댓글 쓰기 -->
+	<insert id="eventComments" parameterType="commentsVo">
+		<selectKey keyProperty="commentNum" order="BEFORE" resultType="commentsVo">
+			select comments_seq.nextval from dual
+		</selectKey>
+		insert into comments(COMMENT_NUM, COMMENT_CONTENT, BOARD_NUM, USER_NUM) 
+		values(#{commentNum}, #{commentContent}, #{boardNum}, #{userNum})
+	</insert>
+	
+	<select id="selectUserComments" parameterType="int" resultType="CommentsVO">
+		select * from COMMENTS where BOARD_NUM = ${boardNum} 
+			and COMMENT_DEL_FLAG is null ORDER BY COMMENT_REG_DATE desc
+	</select>
+	
+	<update id="updateComments" parameterType="commentsVo">
+		update comments set COMMENT_CONTENT = #{commentContent} where comment_num = #{commentNum}
+	</update>
+	
+	<update id="updateCommentsDelFlag" parameterType="int">
+		update comments set COMMENT_DEL_FLAG = 'Y' where comment_num = #{commentNum}
+	</update>
+	
+	<select id="selectCommentsEachUser">
+		select *from
+		(
+			select rownum as RNUM, A.* from
+			(
+				select * from COMMENTS_BOARD_VIEW 
+				where COMMENT_DEL_FLAG is null and USER_ID = #{userId}
+				<include refid="searchWhere"/>
+				order by COMMENT_NUM desc
+			)A
+		)
+		<![CDATA[
+		where RNUM>#{firstRecordIndex} 
+		and RNUM<=#{firstRecordIndex} + #{recordCountPerPage}]]>
+	</select>
+	
+	<select id="getTotalRecordEachUser" parameterType="searchVo" resultType="int">
+		select count(*) from COMMENTS_BOARD_VIEW
+		where COMMENT_DEL_FLAG is null and USER_ID = #{userId}
+		<include refid="searchWhere"/>
+	</select>
+</mapper>

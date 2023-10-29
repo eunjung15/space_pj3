@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.sc.spaceCollection.qna.model.QnaDAO">
+	<insert id="insertQna" parameterType="qnaVo">
+		<selectKey keyProperty="qnaNum" order="BEFORE" resultType="int">
+			select qna_seq.nextval from dual
+		</selectKey>
+		insert into qna(QNA_NUM,QNA_CONTENT,QNA_REG_DATE,USER_NUM,SPACE_NUM)
+		values(#{qnaNum},#{qnaContent},sysdate,#{userNum},#{spaceNum})
+	</insert>
+	
+	<select id="selectQnaBySpaceNum" resultType="map">
+		select *
+		 from 
+		 (
+		 	select A.*, rownum as rn
+		 	from
+		 	(
+		 		select * from qna_sd_view
+				where space_num = #{spaceNum} and qna_del_flag is null
+				order by qna_num desc
+		 	)A
+		 )
+		 <![CDATA[
+		where rn >= #{startRow} and rn <= #{endRow}]]>
+	</select>
+	
+	<select id="selectQnaByUserId" parameterType="searchVo"  resultType="map">
+		select * from
+		(
+			select rownum as RNUM, A.* from
+			(
+				select * from QNA_SN_VIEW
+				WHERE USER_ID=#{userId}
+				AND QNA_OUT_DATE IS NULL
+				<if test="searchCondition!=null and searchCondition!=''">
+					<if test='searchCondition.equals("Y")'>
+						and QNA_ANSWER IS NOT NULL
+					</if>
+					<if test='searchCondition.equals("N")'>
+						and QNA_ANSWER IS NULL
+					</if>
+				</if>
+				order by QNA_NUM desc
+			)A
+		)
+		<![CDATA[
+		where RNUM> #{firstRecordIndex} 
+		and RNUM<=#{firstRecordIndex} + #{recordCountPerPage}]]>
+		
+	</select>
+	
+	<select id="totalQnaByUserId" parameterType="searchVo" resultType="int">
+		select count(*) from QNA_SN_VIEW
+		where USER_ID=#{userId}
+		AND QNA_OUT_DATE IS NULL
+		<if test="searchCondition!=null and searchCondition!=''">
+			<if test='searchCondition.equals("Y")'>
+				and QNA_ANSWER IS NOT NULL
+			</if>
+			<if test='searchCondition.equals("N")'>
+				and QNA_ANSWER IS NULL
+			</if>
+		</if>
+	</select>
+	
+	<update id="deleteQna" parameterType="int">
+		update qna
+		set qna_del_flag = 'Y', QNA_OUT_DATE=SYSDATE
+		where qna_num = #{qnaNum}
+	</update>
+	<select id="getTotalRecordBySpaceNum" parameterType="int">
+		select count(*) from qna_sd_view
+		where space_num = #{spaceNum} and qna_del_flag is null
+	</select>
+	
+	<update id="editQna" parameterType="qnaVo">
+		update qna
+		set QNA_CONTENT=#{qnaContent}
+		where QNA_NUM=#{qnaNum}
+	</update>
+	
+	<update id="qnaAnswer" parameterType="qnaVo">
+		update qna
+		set QNA_ANSWER = #{qnaAnswer}
+		where QNA_NUM = #{qnaNum}
+	</update>
+	
+</mapper>

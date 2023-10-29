@@ -1,0 +1,54 @@
+@charset "UTF-8";
+
+section>div {
+    width: 700px;
+    background: white;
+    height: 397px;
+    margin: 0 auto;
+    margin-top: 174px;
+}
+
+#center>label {
+    float: left;
+    width: 100px;
+    height: 45px;
+    padding-top: 13px;
+    margin-right: 13px;
+    margin-left: 81px;
+}
+
+input[type=text] {
+    width: 390px;
+    height: 45px;
+}
+
+input#exampleCheck1 {
+    margin-left: 450px;
+    margin-right: -99px;
+}
+
+div#center {
+    text-align: right;
+    width: 100%;
+}
+
+input[type=password] {
+    width: 390px;
+    height: 45px;
+}
+
+button.btn.btn-primary {
+    width: 474px;
+    height: 54px;
+    margin-top: 16px;
+}
+
+form {
+    padding-top: 37px;
+}
+
+h4 {
+    display: block;
+    margin-bottom: 29px;
+    font-size: 44px;
+}

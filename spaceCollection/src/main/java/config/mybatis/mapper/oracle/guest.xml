@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sc.spaceCollection.guest.model.GuestDAO">
+
+	<insert id="insertGuest" parameterType="guestVo">
+		<selectKey keyProperty="userNum" order="BEFORE" resultType="int">
+			select USER_INFO_SEQ.nextval from dual
+		</selectKey>
+		insert into USER_INFO(USER_NUM, USER_NAME, USER_HP, USER_ID, USER_PWD, USER_EMAIL, ZIPCODE
+    		, ADDRESS, ADDRESS_DETAIL, SALT, USER_MARKETING_SMS_OK, USER_MARKETING_EMAIL_OK)
+		values(#{userNum},#{userName}, #{userHp}, #{userId}, #{userPwd}, #{userEmail}, #{zipcode}
+			, #{address}, #{addressDetail}, #{salt}, #{userMarketingSmsOk},#{userMarketingEmailOk})
+	</insert>
+
+	<select id="guestCheckId" parameterType="string"
+		resultType="int">
+		select count(*) from USER_INFO
+		where USER_ID=#{userId}
+		and USER_OUT_DATE is null
+	</select>
+	
+	<select id="selectPwd" parameterType="string"
+		resultType="string">
+		select USER_PWD from USER_INFO
+		where USER_ID=#{userId}
+		and USER_OUT_DATE is null
+	</select>
+	
+	<select id="selectUserSalt" parameterType="String" resultType="String">
+		select SALT from USER_INFO
+		WHERE USER_ID=#{userId}
+		and USER_OUT_DATE is null
+	</select>
+
+	<select id="selectUserInfo" parameterType="string" resultType="guestVo">
+		select * from USER_INFO
+		where USER_ID=#{userId}
+	</select>
+	
+	<select id="selectSnsUserInfo" parameterType="guestVo" resultType="guestVo">
+		select * from USER_INFO
+		where USER_ID=#{userId}
+		and USER_SNS_CODE=#{userSnsCode}
+	</select>
+	
+	<select id="selectCountEmail" parameterType="string" resultType="int">
+		select count(*) from USER_INFO
+		where USER_EMAIL=#{userEmail}
+		and USER_OUT_DATE IS NULL
+		and USER_SNS_CODE IS NULL
+	</select>
+	
+	<select id="selectUserIdByEmail" parameterType="string" resultType="guestVo">
+		select * from USER_INFO
+		WHERE USER_EMAIL=#{userEmail}
+		and USER_SNS_CODE IS NULL
+	</select>
+	
+	<select id="selectuserId" parameterType="int" resultType="string">
+		select user_Id from USER_INFO
+		where USER_Num=#{userNum}
+		and USER_OUT_DATE IS NULL
+	</select>
+	<!-- 소셜관련 -->
+	<insert id="insertKakaoUser" parameterType="guestVo">
+		<selectKey keyProperty="userNum" order="BEFORE" resultType="int">
+			select USER_INFO_SEQ.nextval from dual
+		</selectKey>
+		insert into USER_INFO(USER_NUM, USER_NAME, USER_ID, USER_SNS_CODE, USER_PROFILE_IMAGE)
+		values(#{userNum},#{userName},#{userId},#{userSnsCode},#{userProfileImage})
+	</insert>
+	
+	<update id="updateKakaoUser" parameterType="guestVo">
+		update USER_INFO
+		SET USER_NAME=#{userName}, USER_PROFILE_IMAGE=#{userProfileImage}
+		WHERE USER_SNS_CODE=#{userSnsCode} AND USER_ID=#{userId}
+	</update>
+	
+	<select id="selectKakaoUser" parameterType="guestVo" resultType="int">
+		select count(*) from USER_INFO
+		where USER_ID=#{userId}
+		and USER_SNS_CODE=#{userSnsCode}
+	</select>
+	
+	<insert id="insertNaverUser" parameterType="guestVo">
+		<selectKey keyProperty="userNum" order="BEFORE" resultType="int">
+			select USER_INFO_SEQ.nextval from dual
+		</selectKey>
+		insert into USER_INFO(USER_NUM, USER_NAME, USER_ID, USER_EMAIL, USER_SNS_CODE, USER_PROFILE_IMAGE, USER_HP)
+		values(#{userNum},#{userName},#{userId},#{userEmail},#{userSnsCode},#{userProfileImage},#{userHp})
+	</insert>
+	
+	<update id="updateNaverUser" parameterType="guestVo">
+		update USER_INFO
+		SET USER_NAME=#{userName}, USER_EMAIL=#{userEmail}
+		, USER_PROFILE_IMAGE=#{userProfileImage}, USER_HP=#{userHp}
+		WHERE USER_SNS_CODE=#{userSnsCode} AND USER_ID=#{userId}
+	</update>
+	
+	<select id="selectNaverUser" parameterType="guestVo" resultType="int">
+		select count(*) from USER_INFO
+		where USER_ID=#{userId}
+		and USER_SNS_CODE=#{userSnsCode}
+	</select>
+	
+	<select id="checkedUserIdBySnsCode" parameterType="String" resultType="int">
+		select count(*) from USER_INFO
+		where USER_ID=#{userId}
+		and USER_SNS_CODE is not null
+	</select>
+	
+	<update id="updateUserName" parameterType="guestVo">
+		update USER_INFO
+		set USER_NAME=#{userName}
+		where USER_ID=#{userId}
+		and USER_OUT_DATE is null
+	</update>
+	
+	<update id="updateUserHp" parameterType="guestVo">
+		update USER_INFO
+		set USER_HP=#{userHp}
+		where USER_ID=#{userId}
+		and USER_OUT_DATE is null
+	</update>
+	
+	<select id="countByUserIdUserEmail" resultType="int">
+		select count(*) from USER_INFO
+		WHERE USER_ID=#{userId}
+		and USER_EMAIL=#{userEmail}
+		and USER_OUT_DATE IS NULL
+		and USER_SNS_CODE IS NULL
+	</select>
+	<select id="selectByUserNum" parameterType="int" resultType="string">
+		select user_id from user_info where user_num = #{userNum}
+		and USER_OUT_DATE IS NULL	
+	</select>
+	
+	
+	<update id="updateUserProfileImage" parameterType="guestVo">
+		UPDATE USER_INFO
+		SET USER_PROFILE_IMAGE=#{userProfileImage}
+		WHERE USER_ID=#{userId}
+		and USER_OUT_DATE IS NULL
+	</update>
+	
+	<select id="selectUserProfileImage" parameterType="string" resultType="String">
+		select USER_PROFILE_IMAGE
+		FROM USER_INFO
+		WHERE USER_ID=#{userId}
+		and USER_OUT_DATE IS NULL
+	</select>
+	
+	<update id="deleteUser" parameterType="string">
+		update USER_INFO
+		set USER_OUT_TYPE='Y', USER_OUT_DATE=SYSDATE
+		WHERE USER_Id=#{userId} and USER_OUT_DATE IS NULL
+	</update>
+	
+	<update id="updateAgreementSms" parameterType="guestVo">
+		update USER_INFO
+		SET USER_MARKETING_SMS_OK=#{userMarketingSmsOk}
+		where USER_ID=#{userId}
+	</update>
+	
+	<update id="updateAgreementEmail" parameterType="guestVo">
+		update USER_INFO
+		SET USER_MARKETING_EMAIL_OK=#{userMarketingEmailOk}
+		where USER_ID=#{userId}
+	</update>
+	
+	<update id="updateUserPwd" parameterType="guestVo">
+		update USER_INFO
+		SET USER_PWD=#{userPwd}, SALT=#{salt}
+		where USER_ID=#{userId}
+		and USER_OUT_DATE IS NULL
+		and USER_SNS_CODE IS NULL
+	</update>
+	
+</mapper>
