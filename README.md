@@ -32,18 +32,13 @@
 <div align="center"><img src="https://github.com/JOSiroo/spaceCollection/assets/135147602/c6f08bdb-1cd2-46da-9357-7eeb4f546deb"></div>
 <br>
 
-## ✴️ 주요 페이지 소개
+## ✴️ 페이지 소개
     
     1. 사용자
        1-1 메인페이지
        1-2 게시판페이지
        1-3 쿠폰페이지
-       
-    3. 호스트
-       2-1 메인페이지
     
-    4. 관리자
-       3-1 메인페이지
 <br>
 
 
@@ -68,13 +63,5 @@ https://github.com/eunjung15/backup_semipj2/assets/135147602/4055f39a-caf1-4ff5-
 <p>- 쿠폰 룰렛을 이용하여 영문/숫자 조합 12자리 랜덤 쿠폰 발급
 <p>- 한 아이디당 1일 쿠폰은 한 번만 발급 가능
 <p>- 쿠폰 발급시 자동 저장되어 마이쿠폰함에 조회 가능
-
-
-<br>
-<div align="center">
-<kbd><img src="https://github.com/JOSiroo/spaceCollection/assets/124752869/099a6692-8b6e-4811-a217-266232eada23" alt="대체 텍스트" style="border: 20px solid black;"></kbd>
-</div>
-
-
 
 
