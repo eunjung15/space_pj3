@@ -45,13 +45,11 @@
        3-1 메인페이지
 <br>
 
-https://github.com/eunjung15/backup_semipj2/assets/135147602/6f67108a-be35-47ca-a7b0-3e8ccbc6d51d
+
+https://github.com/eunjung15/space_pj3/assets/135147602/eec616ea-a348-441d-84f8-c71b6be0c966
 
 
-
-
-
-https://github.com/eunjung15/backup_semipj2/assets/135147602/df890e98-cb2a-46d7-8808-9f6d2636bcb9
+https://github.com/eunjung15/space_pj3/assets/135147602/5c57f0a3-46ce-4a16-a374-d3e976990fe6
 
 
 
@@ -63,12 +61,10 @@ https://github.com/eunjung15/backup_semipj2/assets/135147602/4055f39a-caf1-4ff5-
 <p>- 쿠폰 발급시 자동 저장되어 마이쿠폰함에 조회 가능
 
 
-
+<br>
 <div align="center">
 <kbd><img src="https://github.com/JOSiroo/spaceCollection/assets/124752869/099a6692-8b6e-4811-a217-266232eada23" alt="대체 텍스트" style="border: 20px solid black;"></kbd>
 </div>
-
-
 
 
 
