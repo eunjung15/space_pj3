@@ -29,7 +29,7 @@
 ## 🛠 라이브러리
 
 ## 👨‍👩‍👧‍👦 팀원소개 및 업무분담
-<div align="center"><img src="https://github.com/JOSiroo/spaceCollection/assets/135147602/c6f08bdb-1cd2-46da-9357-7eeb4f546deb"></div>
+<div align="center"><img src="https://github.com/eunjung15/space_pj3/assets/135147602/970d84c4-dae7-4ec4-9183-fe5f3d6031f1"></div>
 <br>
 
 ## ✴️ 페이지 소개
